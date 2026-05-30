@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Scholarship Hub — by Gourab Das</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f1117;--bg2:#181c27;--bg3:#1e2333;--card:#232840;
+  --accent:#4f8ef7;--accent2:#38c9a0;--accent3:#f7c04f;
+  --text:#e8ecf4;--text2:#9aa3b8;--text3:#636b82;
+  --border:#2a3050;--red:#f76f6f;
+  --font-main:'Sora',sans-serif;
+  --font-bn:'Noto Sans Bengali',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font-main);min-height:100vh;line-height:1.6}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.topbar-brand span{font-size:13px;color:var(--text2)}
+.topbar-brand strong{color:var(--accent);font-size:13px}
+.topbar-brand a{color:var(--accent2);font-size:13px;text-decoration:none}
+.topbar-brand a:hover{text-decoration:underline}
+.logo-text{font-size:16px;font-weight:600;color:var(--text);letter-spacing:-0.3px}
+.lang-toggle{display:flex;gap:4px;background:var(--bg3);border-radius:8px;padding:3px}
+.lang-btn{padding:4px 12px;border-radius:6px;border:none;background:transparent;color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--font-main);transition:all 0.2s}
+.lang-btn.active{background:var(--accent);color:#fff}
+
+/* NAV */
+.nav{display:flex;gap:4px;padding:12px 24px;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto}
+.nav-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--font-main);white-space:nowrap;transition:all 0.2s}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.nav-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* MAIN */
+.main{max-width:960px;margin:0 auto;padding:24px 16px}
+
+/* HERO */
+.hero{text-align:center;padding:32px 16px 24px;margin-bottom:24px}
+.hero h1{font-size:26px;font-weight:600;margin-bottom:8px;line-height:1.3}
+.hero p{color:var(--text2);font-size:14px;max-width:560px;margin:0 auto}
+
+/* SECTION */
+.section{display:none}
+.section.active{display:block}
+
+/* SCHOLARSHIP GRID */
+.schol-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:24px}
+.schol-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all 0.2s;position:relative}
+.schol-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.schol-card.expanded{border-color:var(--accent);background:var(--bg3)}
+.schol-flag{font-size:28px;margin-bottom:10px}
+.schol-country{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px}
+.schol-name{font-size:15px;font-weight:600;margin-bottom:6px;color:var(--text)}
+.schol-name-bn{font-size:13px;color:var(--text2);font-family:var(--font-bn);margin-bottom:10px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;margin:2px}
+.badge-full{background:#1a3a2a;color:#38c9a0;border:1px solid #38c9a040}
+.badge-eng{background:#1a2a3a;color:#4f8ef7;border:1px solid #4f8ef740}
+.badge-bn{background:#2a2a1a;color:#f7c04f;border:1px solid #f7c04f40}
+.schol-amount{font-size:13px;color:var(--accent3);font-weight:500;margin-top:8px}
+.expand-details{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.detail-row{display:flex;gap:10px;margin-bottom:10px;font-size:13px}
+.detail-icon{color:var(--accent);flex-shrink:0;margin-top:1px}
+.detail-label{color:var(--text3);min-width:80px}
+.detail-val{color:var(--text2)}
+.detail-val-bn{font-family:var(--font-bn);color:var(--text2);font-size:12px}
+.expand-btn{font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:var(--font-main);padding:0;margin-top:10px}
+.deadline-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;background:#2a1a1a;color:var(--red);border:1px solid #f76f6f40;margin-top:6px}
+
+/* AUSBILDUNG */
+.aus-steps{display:flex;flex-direction:column;gap:0}
+.aus-step{display:flex;gap:16px;position:relative}
+.aus-step:not(:last-child) .step-line{position:absolute;left:19px;top:44px;bottom:-8px;width:2px;background:var(--border)}
+.step-num{width:38px;height:38px;border-radius:50%;background:var(--card);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--accent);flex-shrink:0;position:relative;z-index:1;margin-top:4px}
+.step-body{flex:1;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.step-title{font-size:15px;font-weight:600;margin-bottom:4px}
+.step-title-bn{font-family:var(--font-bn);font-size:13px;color:var(--accent2);margin-bottom:8px}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.step-desc-bn{font-family:var(--font-bn);font-size:13px;color:var(--text2);line-height:1.8;margin-top:6px}
+.step-tip{background:var(--bg);border-left:3px solid var(--accent3);padding:8px 12px;border-radius:0 8px 8px 0;margin-top:10px;font-size:12px;color:var(--accent3)}
+
+/* INFO CARDS */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:20px}
+.info-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.info-card-icon{font-size:22px;margin-bottom:8px}
+.info-card-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.info-card-bn{font-family:var(--font-bn);font-size:12px;color:var(--accent2);margin-bottom:8px}
+.info-card-body{font-size:13px;color:var(--text2);line-height:1.7}
+.info-card-body-bn{font-family:var(--font-bn);font-size:12px;color:var(--text2);line-height:1.8;margin-top:6px}
+
+/* AI CHAT */
+.ai-section{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.ai-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.ai-title{font-size:14px;font-weight:600}
+.ai-subtitle{font-size:12px;color:var(--text2)}
+.chat-messages{padding:16px;min-height:280px;max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:82%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.6}
+.msg.bot{background:var(--bg3);color:var(--text);border:1px solid var(--border);align-self:flex-start;border-radius:4px 12px 12px 12px}
+.msg.user{background:var(--accent);color:#fff;align-self:flex-end;border-radius:12px 4px 12px 12px}
+.msg.bot .msg-bn{font-family:var(--font-bn);font-size:12px;color:var(--text2);margin-top:4px}
+.chat-input-area{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px}
+.chat-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:13px;font-family:var(--font-main);outline:none;resize:none}
+.chat-input:focus{border-color:var(--accent)}
+.send-btn{padding:10px 18px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:13px;cursor:pointer;font-family:var(--font-main);font-weight:500;white-space:nowrap}
+.send-btn:hover{opacity:0.9}
+.send-btn:disabled{opacity:0.5;cursor:not-allowed}
+.quick-questions{padding:0 16px 12px;display:flex;gap:6px;flex-wrap:wrap}
+.quick-q{padding:5px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font-main);transition:all 0.2s}
+.quick-q:hover{border-color:var(--accent);color:var(--accent)}
+.typing{display:flex;gap:4px;align-items:center;padding:4px 0}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:bounce 1.2s infinite}
+.typing span:nth-child(2){animation-delay:0.2s}
+.typing span:nth-child(3){animation-delay:0.4s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* FILTER */
+.filter-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.filter-chip{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--font-main);transition:all 0.2s}
+.filter-chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .topbar{padding:10px 14px;flex-wrap:wrap;gap:8px}
+  .logo-text{font-size:14px}
+  .hero h1{font-size:20px}
+  .schol-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div>
+      <div class="logo-text">Global Scholarship Hub</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+        <span>Made by</span>
+        <strong>Gourab Das</strong>
+        <span>·</span>
+        <a href="https://instagram.com/gourab_d18" target="_blank">@gourab_d18</a>
+      </div>
+    </div>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('bn')">বাং</button>
+    <button class="lang-btn" onclick="setLang('both')">Both</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showSection('scholarships')">🎓 Scholarships</button>
+  <button class="nav-btn" onclick="showSection('ausbildung')">🇩🇪 Ausbildung Guide</button>
+  <button class="nav-btn" onclick="showSection('ai')">🤖 Ask AI</button>
+</div>
+
+<div class="main">
+
+<!-- HERO -->
+<div class="hero">
+  <h1 id="hero-title">Find Your Dream Scholarship — For Free</h1>
+  <p id="hero-sub">All major fully-funded scholarships + Germany Ausbildung guide, explained simply in English & Bangla.</p>
+</div>
+
+<!-- ===== SCHOLARSHIPS SECTION ===== -->
+<div class="section active" id="sec-scholarships">
+  <div class="filter-bar" id="filter-bar">
+    <button class="filter-chip active" onclick="filterSchol('all',this)">All Countries</button>
+    <button class="filter-chip" onclick="filterSchol('germany',this)">🇩🇪 Germany</button>
+    <button class="filter-chip" onclick="filterSchol('uk',this)">🇬🇧 UK</button>
+    <button class="filter-chip" onclick="filterSchol('usa',this)">🇺🇸 USA</button>
+    <button class="filter-chip" onclick="filterSchol('australia',this)">🇦🇺 Australia</button>
+    <button class="filter-chip" onclick="filterSchol('canada',this)">🇨🇦 Canada</button>
+    <button class="filter-chip" onclick="filterSchol('japan',this)">🇯🇵 Japan</button>
+    <button class="filter-chip" onclick="filterSchol('china',this)">🇨🇳 China</button>
+    <button class="filter-chip" onclick="filterSchol('turkey',this)">🇹🇷 Turkey</button>
+    <button class="filter-chip" onclick="filterSchol('india',this)">🇮🇳 India</button>
+    <button class="filter-chip" onclick="filterSchol('pakistan',this)">🇵🇰 Pakistan</button>
+  </div>
+  <div class="schol-grid" id="schol-grid"></div>
+</div>
+
+<!-- ===== AUSBILDUNG SECTION ===== -->
+<div class="section" id="sec-ausbildung">
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-card-icon">🤔</div>
+      <div class="info-card-title">What is Ausbildung?</div>
+      <div class="info-card-bn" id="aus-what-bn" style="display:none">অসবিলডুং কী?</div>
+      <div class="info-card-body">A German vocational training program (usually 2–3 years) where you work at a company AND study at a vocational school simultaneously. You earn a monthly salary while learning!</div>
+      <div class="info-card-body-bn" id="aus-what-body-bn" style="display:none">জার্মান ভোকেশনাল ট্রেনিং প্রোগ্রাম (২-৩ বছর) যেখানে তুমি একসাথে কোম্পানিতে কাজ করবে আর স্কুলে পড়বে। পড়ার সময়ই প্রতি মাসে বেতন পাবে!</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-icon">💶</div>
+      <div class="info-card-title">Monthly Salary</div>
+      <div class="info-card-bn" id="aus-sal-bn" style="display:none">মাসিক বেতন</div>
+      <div class="info-card-body">€620 – €1,200/month depending on field. Healthcare, IT, and skilled trades pay highest. Increases each year of training.</div>
+      <div class="info-card-body-bn" id="aus-sal-body-bn" style="display:none">মাসে €৬২০ – €১,২০০। স্বাস্থ্যসেবা, IT, এবং টেকনিক্যাল ফিল্ডে বেশি পাওয়া যায়। প্রতি বছর বেতন বাড়ে।</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-icon">📋</div>
+      <div class="info-card-title">Basic Requirements</div>
+      <div class="info-card-bn" id="aus-req-bn" style="display:none">মূল যোগ্যতা</div>
+      <div class="info-card-body">SSC/HSC completed · Basic German (B1 minimum, B2 preferred) · Age 18–35 · Clean background · Health certificate</div>
+      <div class="info-card-body-bn" id="aus-req-body-bn" style="display:none">SSC/HSC পাস · জার্মান ভাষা B1 (B2 ভালো) · বয়স ১৮–৩৫ · ক্লিন ব্যাকগ্রাউন্ড · স্বাস্থ্য সনদ</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-icon">⏳</div>
+      <div class="info-card-title">How long does it take?</div>
+      <div class="info-card-bn" id="aus-dur-bn" style="display:none">কত সময় লাগে?</div>
+      <div class="info-card-body">From deciding to starting: usually 12–18 months. Training itself: 2–3 years. After finishing: permanent residency pathway opens!</div>
+      <div class="info-card-body-bn" id="aus-dur-body-bn" style="display:none">সিদ্ধান্ত থেকে শুরু পর্যন্ত: ১২–১৮ মাস। ট্রেনিং: ২–৩ বছর। শেষে জার্মানিতে পার্মানেন্ট থাকার সুযোগ!</div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <h2 style="font-size:17px;font-weight:600;margin-bottom:16px;color:var(--text)">Step-by-Step Process</h2>
+  <div class="aus-steps" id="aus-steps"></div>
+</div>
+
+<!-- ===== AI SECTION ===== -->
+<div class="section" id="sec-ai">
+  <div class="ai-section">
+    <div class="ai-header">
+      <div class="ai-dot"></div>
+      <div>
+        <div class="ai-title">AI Scholarship & Ausbildung Assistant</div>
+        <div class="ai-subtitle">Ask anything in English or Bangla — I'll explain clearly</div>
+      </div>
+    </div>
+    <div class="quick-questions">
+      <button class="quick-q" onclick="quickAsk('What documents do I need for Ausbildung?')">Ausbildung documents?</button>
+      <button class="quick-q" onclick="quickAsk('Ausbildung এর জন্য কী কী লাগবে বাংলায় বলো')">অসবিলডুং কী কী লাগবে?</button>
+      <button class="quick-q" onclick="quickAsk('Which scholarship is best for Bangladeshi students?')">Best scholarship for BD?</button>
+      <button class="quick-q" onclick="quickAsk('DAAD scholarship apply process বাংলায় বলো')">DAAD apply process</button>
+      <button class="quick-q" onclick="quickAsk('How to learn German fast for Ausbildung?')">German শেখার tips?</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg bot">
+        Hi! I'm your scholarship & Ausbildung guide. Ask me anything — in English or Bangla!<br>
+        <span class="msg-bn">হ্যালো! স্কলারশিপ বা অসবিলডুং নিয়ে যেকোনো প্রশ্ন করো — বাংলা বা ইংরেজিতে।</span>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask anything about scholarships or Ausbildung..." onkeydown="handleKey(event)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">Send ↑</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+
+<script>
+const SCHOLARSHIPS = [
+  {id:'daad',country:'germany',flag:'🇩🇪',name:'DAAD Scholarship',nameBn:'DAAD বৃত্তি',amount:'Full tuition + €934/month + insurance',deadline:'Varies by program (Oct–Nov)',level:'Masters/PhD',link:'https://www.daad.de',desc:'Germany\'s largest scholarship for international students. Covers tuition, living costs, health insurance, and travel allowance.',descBn:'জার্মানির সবচেয়ে বড় বৃত্তি। টিউশন ফি, থাকার খরচ, স্বাস্থ্যবীমা এবং ভ্রমণ ভাতা সব কভার করে।',require:'Strong academic record, motivation letter, two references, language proof',requireBn:'ভালো একাডেমিক রেজাল্ট, মোটিভেশন লেটার, দুটি রেফারেন্স, ভাষার প্রমাণ',lang:'German B2 or IELTS 6.5+'},
+  {id:'chevening',country:'uk',flag:'🇬🇧',name:'Chevening Scholarship',nameBn:'শেভেনিং বৃত্তি',amount:'Full tuition + £1,093/month + flights',deadline:'November each year',level:'Masters',link:'https://www.chevening.org',desc:'UK government scholarship for future leaders. Covers full Masters at any UK university. Extremely prestigious.',descBn:'UK সরকারের বৃত্তি ভবিষ্যৎ নেতাদের জন্য। যেকোনো UK বিশ্ববিদ্যালয়ে পূর্ণ মাস্টার্স। অত্যন্ত মর্যাদাপূর্ণ।',require:'2 years work experience, leadership potential, 3 references',requireBn:'২ বছর কাজের অভিজ্ঞতা, নেতৃত্বের সম্ভাবনা, ৩টি রেফারেন্স',lang:'IELTS 6.5+ required'},
+  {id:'fulbright',country:'usa',flag:'🇺🇸',name:'Fulbright Foreign Student',nameBn:'ফুলব্রাইট বৃত্তি',amount:'Full tuition + living + flights',deadline:'May–June each year',level:'Masters/PhD',link:'https://foreign.fulbrightonline.org',desc:'US government\'s flagship scholarship. Study at top US universities fully funded. One of the most competitive global scholarships.',descBn:'মার্কিন সরকারের প্রধান বৃত্তি। শীর্ষ US বিশ্ববিদ্যালয়ে পড়ার সুযোগ। বিশ্বের সবচেয়ে প্রতিযোগিতামূলক বৃত্তিগুলোর একটি।',require:'Excellent academics, research/work experience, clear study plan',requireBn:'চমৎকার একাডেমিক রেজাল্ট, গবেষণা/কাজের অভিজ্ঞতা, স্পষ্ট পরিকল্পনা',lang:'TOEFL/IELTS required'},
+  {id:'australia',country:'australia',flag:'🇦🇺',name:'Australia Awards',nameBn:'অস্ট্রেলিয়া অ্যাওয়ার্ডস',amount:'Full tuition + AUD 27,000/year + flights',deadline:'April–May each year',level:'Masters/PhD',link:'https://www.australiaawards.gov.au',desc:'Australian Government scholarship for developing countries. Covers everything including establishment allowance and return flights.',descBn:'উন্নয়নশীল দেশের শিক্ষার্থীদের জন্য অস্ট্রেলিয়া সরকারের বৃত্তি। সব কিছু কভার করে।',require:'Work experience preferred, development focus in study plan',requireBn:'কাজের অভিজ্ঞতা পছন্দনীয়, স্টাডি প্ল্যানে উন্নয়নের লক্ষ্য',lang:'IELTS 6.5+ required'},
+  {id:'vanier',country:'canada',flag:'🇨🇦',name:'Vanier CGS (Canada)',nameBn:'ভেনিয়ার বৃত্তি',amount:'CAD $50,000/year for 3 years',deadline:'November each year',level:'PhD only',link:'https://vanier.gc.ca',desc:'Canada\'s most prestigious doctoral scholarship. For world-class doctoral students with leadership skills.',descBn:'কানাডার সবচেয়ে মর্যাদাপূর্ণ PhD বৃত্তি। নেতৃত্বের দক্ষতাসম্পন্ন বিশ্বমানের PhD শিক্ষার্থীদের জন্য।',require:'Nominated by university, excellent research record, leadership',requireBn:'বিশ্ববিদ্যালয়ের মনোনয়ন, গবেষণার রেকর্ড, নেতৃত্ব',lang:'English or French'},
+  {id:'mext',country:'japan',flag:'🇯🇵',name:'MEXT Scholarship (Japan)',nameBn:'MEXT বৃত্তি (জাপান)',amount:'Full tuition + ¥143,000/month',deadline:'May–June each year',level:'UG/Masters/PhD',link:'https://www.mext.go.jp',desc:'Japanese Government scholarship. Study at a Japanese university with full financial support. Japanese language training included.',descBn:'জাপান সরকারের বৃত্তি। জাপানি বিশ্ববিদ্যালয়ে পড়ার সুযোগ সম্পূর্ণ আর্থিক সহায়তায়। জাপানি ভাষা শেখানো হয়।',require:'Age limit varies, academic merit, embassy screening',requireBn:'বয়সের সীমা আছে, একাডেমিক যোগ্যতা, দূতাবাসের স্ক্রিনিং',lang:'JLPT or English depending on program'},
+  {id:'csc',country:'china',flag:'🇨🇳',name:'CSC Scholarship (China)',nameBn:'CSC বৃত্তি (চীন)',amount:'Full tuition + ¥3,000/month living',deadline:'March–April each year',level:'UG/Masters/PhD',link:'https://www.csc.edu.cn',desc:'Chinese Government Scholarship. Study at top Chinese universities. One of the largest scholarship programs globally.',descBn:'চীন সরকারের বৃত্তি। শীর্ষ চীনা বিশ্ববিদ্যালয়ে পড়ার সুযোগ। বিশ্বের বৃহত্তম বৃত্তি প্রোগ্রামগুলোর একটি।',require:'Good academics, health certificate, no criminal record',requireBn:'ভালো একাডেমিক রেজাল্ট, স্বাস্থ্য সনদ, কোনো ক্রিমিনাল রেকর্ড নেই',lang:'English or Chinese (HSK)'},
+  {id:'turkiye',country:'turkey',flag:'🇹🇷',name:'Türkiye Burslari',nameBn:'তুরস্ক বৃত্তি',amount:'Full tuition + ₺700/month + accommodation',deadline:'February each year',level:'UG/Masters/PhD',link:'https://www.turkiyeburslari.gov.tr',desc:'Turkish Government scholarship. Very popular among Bangladeshi students. Turkish language course provided. Accommodation covered.',descBn:'তুরস্ক সরকারের বৃত্তি। বাংলাদেশি শিক্ষার্থীদের মধ্যে খুব জনপ্রিয়। তুর্কি ভাষা শেখানো হয়। থাকার জায়গা বিনামূল্যে।',require:'Age: UG under 21, Masters under 30, PhD under 35',requireBn:'বয়স: UG ২১ বছরের নিচে, মাস্টার্স ৩০ এর নিচে, PhD ৩৫ এর নিচে',lang:'Turkish course provided, English programs available'},
+  {id:'iccr',country:'india',flag:'🇮🇳',name:'ICCR Scholarship (India)',nameBn:'ICCR বৃত্তি (ভারত)',amount:'Full tuition + ₹15,000–30,000/month + accommodation',deadline:'January–March each year',level:'UG/Masters/PhD',link:'https://www.iccr.gov.in',desc:'Indian Council for Cultural Relations scholarship for foreign students. Covers tuition, hostel accommodation, and monthly stipend. Very popular among Bangladeshi students due to proximity and cultural similarity.',descBn:'ভারত সরকারের বৃত্তি বিদেশি শিক্ষার্থীদের জন্য। টিউশন ফি, হোস্টেল এবং মাসিক ভাতা সব কভার করে। বাংলাদেশি শিক্ষার্থীদের মধ্যে কাছের দেশ হওয়ায় অনেক জনপ্রিয়।',require:'Minimum 60% marks in previous qualification, age under 30 for PG, under 45 for PhD, medical fitness certificate',requireBn:'আগের পরীক্ষায় ন্যূনতম ৬০%, PG-র জন্য বয়স ৩০ এর নিচে, PhD-র জন্য ৪৫ এর নিচে, মেডিকেল সার্টিফিকেট',lang:'English medium programs available; Hindi programs also available'},
+  {id:'iqbal',country:'pakistan',flag:'🇵🇰',name:'Allama Iqbal Scholarship',nameBn:'আল্লামা ইকবাল বৃত্তি',amount:'Full tuition + PKR 12,000–15,000/month + accommodation',deadline:'July–September each year',level:'UG/Masters/PhD',link:'https://hec.gov.pk',desc:'Pakistan Government scholarship offered through Higher Education Commission (HEC) for foreign students. Covers full tuition, hostel, and monthly stipend. Open to students from Muslim and developing countries including Bangladesh.',descBn:'পাকিস্তান সরকার (HEC) এর মাধ্যমে বিদেশি শিক্ষার্থীদের জন্য বৃত্তি। টিউশন ফি, হোস্টেল এবং মাসিক ভাতা কভার করে। মুসলিম ও উন্নয়নশীল দেশের শিক্ষার্থীরা আবেদন করতে পারবে, বাংলাদেশও অন্তর্ভুক্ত।',require:'Minimum 60% marks, age under 35, health certificate, no criminal record, must apply through Bangladesh Embassy',requireBn:'ন্যূনতম ৬০% নম্বর, বয়স ৩৫ এর নিচে, স্বাস্থ্য সনদ, ক্লিন রেকর্ড, বাংলাদেশ দূতাবাসের মাধ্যমে আবেদন করতে হবে',lang:'English and Urdu medium programs available'},
+];
+
+const AUS_STEPS = [
+  {num:1,title:'Learn German',titleBn:'জার্মান ভাষা শিখুন',desc:'Start with A1 and reach at least B1 (B2 strongly preferred). Take classes at Goethe Institut Bangladesh or online via DW Learn German. This is the most important step — don\'t skip it!',descBn:'A1 থেকে শুরু করুন এবং কমপক্ষে B1 পৌঁছান (B2 সবচেয়ে ভালো)। Goethe Institut Bangladesh বা DW Learn German অনলাইনে শিখতে পারো।',tip:'Tip: DW Learn German is free online. Goethe Institut Dhaka offers official certificates.'},
+  {num:2,title:'Take German exam (Goethe/TestDaF)',titleBn:'জার্মান পরীক্ষা দিন',desc:'Get your official German language certificate. Goethe Institut B1/B2 certificate is the most recognized. This is mandatory for your visa application.',descBn:'অফিসিয়াল জার্মান ভাষার সার্টিফিকেট নিন। Goethe Institut B1/B2 সার্টিফিকেট সবচেয়ে পরিচিত। ভিসার জন্য বাধ্যতামূলক।',tip:'Exam fee at Goethe Institut Dhaka: approx. BDT 8,000–15,000'},
+  {num:3,title:'Find an Ausbildung place (Ausbildungsplatz)',titleBn:'অসবিলডুং জায়গা খুঁজুন',desc:'Search for training companies on: Make it in Germany (make-it-in-germany.com), IHK Job Portal, StepStone.de, Indeed Germany. Apply to 20–30 companies — rejection is normal, keep applying!',descBn:'এই ওয়েবসাইটে চাকরি খুঁজুন: Make it in Germany, IHK Job Portal, StepStone.de। ২০–৩০ কোম্পানিতে আবেদন করুন — প্রত্যাখ্যান স্বাভাবিক, চালিয়ে যান!',tip:'Popular fields: Elderly care, IT, Mechatronics, Hotel management, Logistics'},
+  {num:4,title:'Get contract & Recognition (Anerkennung)',titleBn:'চুক্তি ও স্বীকৃতি পান',desc:'Once a company accepts you, they\'ll give you a training contract. Get your educational certificates recognized by anabin database or ZAB (Central Office for Foreign Education).',descBn:'কোম্পানি নিলে ট্রেনিং চুক্তি দেবে। তোমার সার্টিফিকেটগুলো Anabin বা ZAB দিয়ে স্বীকৃত করতে হবে।',tip:'Use anabin.kmk.org to check if your BD certificate is recognized'},
+  {num:5,title:'Apply for Germany Visa (National Visa D)',titleBn:'জার্মানি ভিসার জন্য আবেদন করুন',desc:'Apply at the German Embassy in Dhaka. Required documents: training contract, language certificate, recognized qualification, health insurance, bank statements, motivation letter.',descBn:'ঢাকায় জার্মান দূতাবাসে আবেদন করুন। লাগবে: ট্রেনিং চুক্তি, ভাষার সার্টিফিকেট, স্বীকৃত সার্টিফিকেট, স্বাস্থ্যবীমা, ব্যাংক স্টেটমেন্ট, মোটিভেশন লেটার।',tip:'Visa processing takes 2–4 months. Book appointment early at German Embassy Dhaka'},
+  {num:6,title:'Travel to Germany & Start Training',titleBn:'জার্মানি যান ও ট্রেনিং শুরু করুন',desc:'After visa approval, travel to Germany. Register at the local Einwohnermeldeamt (registration office) within 2 weeks. Open a bank account. Start your Ausbildung and earn your salary!',descBn:'ভিসা পেলে জার্মানি যাও। ২ সপ্তাহের মধ্যে স্থানীয় অফিসে রেজিস্ট্রেশন করো। ব্যাংক অ্যাকাউন্ট খোলো। অসবিলডুং শুরু করো এবং বেতন পাও!',tip:'After 2 years of work post-Ausbildung, you can apply for permanent residence (Niederlassungserlaubnis)'},
+];
+
+let currentLang = 'en';
+let currentFilter = 'all';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  updateLang();
+}
+
+function updateLang() {
+  const showEn = currentLang === 'en' || currentLang === 'both';
+  const showBn = currentLang === 'bn' || currentLang === 'both';
+  document.querySelectorAll('[id$="-bn"]').forEach(el => {
+    el.style.display = showBn ? '' : 'none';
+  });
+  document.getElementById('hero-title').textContent = showBn && !showEn
+    ? 'স্বপ্নের বৃত্তি খুঁজুন — বিনামূল্যে'
+    : 'Find Your Dream Scholarship — For Free';
+  document.getElementById('hero-sub').textContent = showBn && !showEn
+    ? 'সব প্রধান ফুলি-ফান্ডেড বৃত্তি + জার্মানি অসবিলডুং গাইড, সহজ ভাষায়।'
+    : 'All major fully-funded scholarships + Germany Ausbildung guide, explained simply in English & Bangla.';
+  renderScholarships();
+  renderAusbildung();
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function filterSchol(tag, el) {
+  currentFilter = tag;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderScholarships();
+}
+
+function renderScholarships() {
+  const grid = document.getElementById('schol-grid');
+  const showEn = currentLang === 'en' || currentLang === 'both';
+  const showBn = currentLang === 'bn' || currentLang === 'both';
+  const filtered = currentFilter === 'all' ? SCHOLARSHIPS : SCHOLARSHIPS.filter(s => s.country === currentFilter);
+  grid.innerHTML = filtered.map(s => `
+    <div class="schol-card" id="card-${s.id}" onclick="toggleCard('${s.id}')">
+      <div class="schol-flag">${s.flag}</div>
+      <div class="schol-country">${s.country.toUpperCase()}</div>
+      ${showEn ? `<div class="schol-name">${s.name}</div>` : ''}
+      ${showBn ? `<div class="schol-name-bn">${s.nameBn}</div>` : ''}
+      <div style="margin:8px 0">
+        <span class="badge badge-full">Fully Funded</span>
+        <span class="badge badge-eng">${s.level}</span>
+      </div>
+      <div class="schol-amount">💰 ${s.amount}</div>
+      <div class="deadline-badge">⏰ Deadline: ${s.deadline}</div>
+      <div class="expand-details" id="det-${s.id}" style="display:none">
+        <div class="detail-row">
+          <span class="detail-icon">📝</span>
+          <div>
+            ${showEn ? `<div class="detail-label">About</div><div class="detail-val">${s.desc}</div>` : ''}
+            ${showBn ? `<div class="detail-val-bn">${s.descBn}</div>` : ''}
+          </div>
+        </div>
+        <div class="detail-row">
+          <span class="detail-icon">✅</span>
+          <div>
+            ${showEn ? `<div class="detail-label">Requirements</div><div class="detail-val">${s.require}</div>` : ''}
+            ${showBn ? `<div class="detail-val-bn">${s.requireBn}</div>` : ''}
+          </div>
+        </div>
+        <div class="detail-row">
+          <span class="detail-icon">🗣️</span>
+          <div>
+            <div class="detail-label">Language</div>
+            <div class="detail-val">${s.lang}</div>
+          </div>
+        </div>
+        <a href="${s.link}" target="_blank" style="display:inline-block;margin-top:10px;padding:7px 16px;background:var(--accent);color:#fff;border-radius:8px;font-size:12px;text-decoration:none;">Official Website ↗</a>
+      </div>
+      <button class="expand-btn" id="btn-${s.id}">Show details ▾</button>
+    </div>
+  `).join('');
+}
+
+function toggleCard(id) {
+  const det = document.getElementById('det-' + id);
+  const btn = document.getElementById('btn-' + id);
+  const card = document.getElementById('card-' + id);
+  const open = det.style.display === 'block';
+  det.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? 'Show details ▾' : 'Hide details ▴';
+  card.classList.toggle('expanded', !open);
+}
+
+function renderAusbildung() {
+  const showEn = currentLang === 'en' || currentLang === 'both';
+  const showBn = currentLang === 'bn' || currentLang === 'both';
+  document.getElementById('aus-steps').innerHTML = AUS_STEPS.map(s => `
+    <div class="aus-step">
+      <div style="position:relative">
+        <div class="step-num">${s.num}</div>
+        ${s.num < AUS_STEPS.length ? '<div class="step-line"></div>' : ''}
+      </div>
+      <div class="step-body">
+        ${showEn ? `<div class="step-title">${s.title}</div>` : ''}
+        ${showBn ? `<div class="step-title-bn">${s.titleBn}</div>` : ''}
+        ${showEn ? `<div class="step-desc">${s.desc}</div>` : ''}
+        ${showBn ? `<div class="step-desc-bn">${s.descBn}</div>` : ''}
+        <div class="step-tip">💡 ${s.tip}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// AI CHAT
+const CONTEXT = `You are a helpful assistant on a scholarship and Germany Ausbildung information website made by Gourab Das. 
+Answer questions about: fully funded scholarships worldwide (DAAD, Chevening, Fulbright, Australia Awards, Vanier, MEXT, CSC, Türkiye Burslari), and Germany Ausbildung (vocational training).
+If question is in Bangla, reply in Bangla. If in English, reply in English. If mixed, reply in both.
+Be clear, simple, and practical. Use bullet points where helpful. 
+For Ausbildung: explain it's a 2-3 year paid vocational training in Germany, requires German language (B1/B2), monthly salary €620-1200, leads to PR pathway.
+Keep answers concise but complete.`;
+
+let chatHistory = [];
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  addMsg(msg, 'user');
+  chatHistory.push({role:'user', content: msg});
+  document.getElementById('send-btn').disabled = true;
+  const typingEl = addTyping();
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: CONTEXT,
+        messages: chatHistory
+      })
+    });
+    const data = await res.json();
+    typingEl.remove();
+    const reply = data.content[0].text;
+    chatHistory.push({role:'assistant', content: reply});
+    addMsg(reply, 'bot');
+  } catch(e) {
+    typingEl.remove();
+    addMsg('Sorry, something went wrong. Please try again!', 'bot');
+  }
+  document.getElementById('send-btn').disabled = false;
+}
+
+function addMsg(text, type) {
+  const chat = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + type;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function addTyping() {
+  const chat = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function quickAsk(q) {
+  document.getElementById('chat-input').value = q;
+  sendMessage();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+renderScholarships();
+renderAusbildung();
+</script>
+</body>
+</html>
